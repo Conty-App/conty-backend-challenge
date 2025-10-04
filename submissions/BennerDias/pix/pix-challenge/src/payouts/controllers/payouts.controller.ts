@@ -11,19 +11,19 @@ import {
 
 @Controller('payouts')
 export class PayoutsController {
-  constructor(private readonly PayoutsService: PayoutsService) {}
+  constructor(private readonly payoutService: PayoutsService) {}
 
   @Post('batch')
   async processBatch(
-    @Body() CreateBatchDto: CreateBatchDto,
+    @Body() createBatchDto: CreateBatchDto,
   ): Promise<BatchReportDto> {
     try {
-      const report = await this.PayoutsService.processBatch(CreateBatchDto);
+      const report = await this.payoutService.processBatch(createBatchDto);
       return report;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       throw new HttpException(
-        'Erro ao processar batch',
+        'Erro ao processar o batch',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

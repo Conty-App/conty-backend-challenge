@@ -1,98 +1,143 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Desafio Conty – {Benner Dias / @BennerDias}
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+> **Local da submissão:** `submissions/BennerDias/pix`
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Como rodar
 
-## Description
+🚀 Como rodar o projeto
+🧩 Pré-requisitos
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Antes de começar, certifique-se de ter instalado:
 
-## Project setup
+Node.js
+(versão 18 ou superior)
 
-```bash
-$ npm install
-```
+NestJS CLI
+:
 
-## Compile and run the project
+npm install -g @nestjs/cli
 
-```bash
-# development
-$ npm run start
+MySQL
+rodando localmente
 
-# watch mode
-$ npm run start:dev
+(Opcional) Insomnia
+para testar as rotas
 
-# production mode
-$ npm run start:prod
-```
+⚙️ 1. Clonar o repositório
+git clone https://github.com/seu-usuario/seu-repositorio.git
+cd seu-repositorio
 
-## Run tests
+📦 2. Instalar as dependências
+npm install
 
-```bash
-# unit tests
-$ npm run test
+🧾 3. Configurar variáveis de ambiente
 
-# e2e tests
-$ npm run test:e2e
+Crie um arquivo .env na raiz do projeto com as configurações do banco:
 
-# test coverage
-$ npm run test:cov
-```
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=root
+DB_DATABASE=db_pix
 
-## Deployment
+💡 Caso utilize outro banco ou senha, ajuste os valores acima conforme seu ambiente.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+🧱 4. Configurar o banco de dados
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Crie o banco manualmente no MySQL:
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+CREATE DATABASE db_pix;
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+O TypeORM se encarrega de criar as tabelas automaticamente (se synchronize: true) ou via migrations, dependendo da configuração.
 
-## Resources
+▶️ 5. Rodar o projeto
 
-Check out a few resources that may come in handy when working with NestJS:
+Para iniciar em modo desenvolvimento com hot reload:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+npm run start:dev
 
-## Support
+Ou em modo de produção:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+npm run start:prod
 
-## Stay in touch
+O servidor será iniciado em:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+http://localhost:3000
 
-## License
+🧪 6. Rodar os testes
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Este projeto utiliza Jest para testes unitários.
+
+Para executar todos os testes:
+
+npm run test
+
+Para ver o relatório detalhado:
+
+npm run test:watch
+
+🔗 Rotas disponíveis
+
+POST /payouts/batch
+
+Processa um lote de pagamentos PIX.
+
+Exemplo de requisição:
+
+POST http://localhost:3000/payouts/batch
+Content-Type: application/json
+
+Body (JSON):
+
+{
+"batch_id": "batch_001",
+"items": [
+{ "external_id": "123", "amount": 500 },
+{ "external_id": "456", "amount": 1000 }
+]
+}
+
+Resposta (exemplo):
+
+{
+"batch_id": "batch_001",
+"processed": 2,
+"successful": 2,
+"failed": 0,
+"duplicates": 0,
+"details": [
+{ "external_id": "123", "success": true },
+{ "external_id": "456", "success": true }
+]
+}
+
+✅ Tecnologias utilizadas
+
+NestJS
+
+TypeORM
+
+MySQL
+
+Jest
+
+Insomnia
+
+## Endpoints/CLI
+
+- Liste endpoints/flags e exemplos de request/response (cURL/Postman)
+
+## Arquitetura
+
+- Desenho rápido das camadas
+- Principais decisões e trade‑offs
+- O que faria diferente com mais tempo
+
+## Testes
+
+- Como rodar e o que cobre
+
+## IA/Libraries
+
+- Onde usou IA
+- O que é seu vs. de terceiros
