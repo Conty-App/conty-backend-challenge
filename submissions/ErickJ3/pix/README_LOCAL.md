@@ -1,8 +1,6 @@
-# Desafio Conty – {ErickJ3/@github}
+# Desafio Conty - PIX – {ErickJ3/@github}
 
 > **Local da submissão:** `submissions/ErickJ3/pix`
-
----
 
 ## Requisitos
 
