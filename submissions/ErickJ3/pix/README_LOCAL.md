@@ -190,4 +190,9 @@ curl -X POST http://localhost:8080/batches -d @batch.json
 
 ### Logs docker
 
-![Request Response](assets/logs.png)
+![Logs](assets/logs.png)
+
+### Tempo de desafio
+
+![Wakatime Challenge](assets/time-challenge.png)
+
