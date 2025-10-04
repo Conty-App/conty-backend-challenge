@@ -67,22 +67,26 @@ func (s *PaymentService) processItem(item entity.PaymentItem) entity.PaymentDeta
 
 	err := s.pixService.ProcessPayment(item)
 
-	var detail entity.PaymentDetail
-	if err != nil {
-		detail = entity.PaymentDetail{
-			ExternalID:  item.ExternalID,
-			Status:      "failed",
-			AmountCents: item.AmountCents,
-			Error:       err.Error(),
-		}
-	} else {
-		detail = entity.PaymentDetail{
-			ExternalID:  item.ExternalID,
-			Status:      "paid",
-			AmountCents: item.AmountCents,
-		}
+	payment := entity.Payment{
+		ExternalID:  item.ExternalID,
+		UserID:      item.UserID,
+		AmountCents: item.AmountCents,
+		PixKey:      item.PixKey,
 	}
 
-	s.repo.Save(item.ExternalID, detail)
-	return detail
+	if err != nil {
+		payment.Status = "failed"
+		payment.Error = err.Error()
+	} else {
+		payment.Status = "paid"
+	}
+
+	_ = s.repo.Save(payment)
+
+	return entity.PaymentDetail{
+		ExternalID:  payment.ExternalID,
+		Status:      payment.Status,
+		AmountCents: payment.AmountCents,
+		Error:       payment.Error,
+	}
 }

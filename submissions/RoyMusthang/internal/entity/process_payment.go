@@ -1,5 +1,13 @@
 package entity
 
+type Payment struct {
+	ExternalID  string
+	UserID      string
+	AmountCents int64
+	PixKey      string
+	Status      string
+	Error       string
+}
 type PaymentItem struct {
 	ExternalID  string `json:"external_id"`
 	UserID      string `json:"user_id"`
@@ -10,6 +18,11 @@ type PaymentItem struct {
 type BatchRequest struct {
 	BatchID string        `json:"batch_id"`
 	Items   []PaymentItem `json:"items"`
+}
+
+type PaymentPayload struct {
+	PaymentDetail PaymentDetail
+	PaymentItem   PaymentItem
 }
 
 type PaymentDetail struct {

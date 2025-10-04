@@ -25,7 +25,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	failureRate := 0.1 // 10% de falha
 
-	repo := repository.NewPaymentRepository()
+	repo := repository.NewPaymentRepository(s.db.DB())
 	pixService := service.NewPIXService(failureRate)
 	paymentService := service.NewPaymentService(repo, pixService)
 	handler := NewHandler(paymentService)

@@ -9,6 +9,8 @@ import (
 	"syscall"
 	"time"
 
+	"RoyMusthang/migrations"
+
 	"RoyMusthang/internal/server"
 )
 
@@ -38,8 +40,8 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 }
 
 func main() {
-
 	server := server.NewServer()
+	migrations.RunMigrations()
 
 	// Create a done channel to signal when the shutdown is complete
 	done := make(chan bool, 1)
