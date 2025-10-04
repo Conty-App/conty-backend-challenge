@@ -1,6 +1,7 @@
 package service
 
 import (
+	"log"
 	"sync"
 
 	"RoyMusthang/internal/entity"
@@ -20,6 +21,8 @@ func NewPaymentService(repo *repository.PaymentRepository, pixService *PIXServic
 }
 
 func (s *PaymentService) ProcessBatch(req entity.BatchRequest) entity.BatchResponse {
+	log.Printf("[INFO] Starting batch processing: BatchID=%s, Items=%d", req.BatchID, len(req.Items))
+
 	response := entity.BatchResponse{
 		BatchID: req.BatchID,
 		Details: make([]entity.PaymentDetail, 0, len(req.Items)),
@@ -54,13 +57,23 @@ func (s *PaymentService) ProcessBatch(req entity.BatchRequest) entity.BatchRespo
 		case "duplicate":
 			response.Duplicates++
 		}
+
+		log.Printf("[INFO] Processed item: ExternalID=%s Status=%s AmountCents=%d Error=%s",
+			detail.ExternalID, detail.Status, detail.AmountCents, detail.Error)
 	}
+
+	log.Printf("[INFO] Batch completed: BatchID=%s Processed=%d Success=%d Failed=%d Duplicates=%d",
+		response.BatchID, response.Processed, response.Successful, response.Failed, response.Duplicates)
 
 	return response
 }
 
 func (s *PaymentService) processItem(item entity.PaymentItem) entity.PaymentDetail {
+	log.Printf("[DEBUG] Processing item: ExternalID=%s UserID=%s AmountCents=%d PixKey=%s",
+		item.ExternalID, item.UserID, item.AmountCents, item.PixKey)
+
 	if s.repo.IsProcessed(item.ExternalID) {
+		log.Printf("[WARN] Duplicate detected: ExternalID=%s", item.ExternalID)
 		existing, _ := s.repo.Get(item.ExternalID)
 		return existing
 	}
@@ -77,8 +90,10 @@ func (s *PaymentService) processItem(item entity.PaymentItem) entity.PaymentDeta
 	if err != nil {
 		payment.Status = "failed"
 		payment.Error = err.Error()
+		log.Printf("[ERROR] Payment failed: ExternalID=%s Error=%s", payment.ExternalID, payment.Error)
 	} else {
 		payment.Status = "paid"
+		log.Printf("[INFO] Payment succeeded: ExternalID=%s AmountCents=%d", payment.ExternalID, payment.AmountCents)
 	}
 
 	_ = s.repo.Save(payment)

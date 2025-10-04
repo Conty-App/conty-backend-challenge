@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"RoyMusthang/internal/entity"
@@ -24,6 +25,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r := gin.Default()
 
 	failureRate := 0.1 // 10% de falha
+	log.Printf("[INIT] Starting server with failureRate=%.2f", failureRate)
 
 	repo := repository.NewPaymentRepository(s.db.DB())
 	pixService := service.NewPIXService(failureRate)
@@ -39,43 +41,47 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.GET("/", s.HelloWorldHandler)
 	r.POST("/payouts/batch", handler.ProcessBatch)
-
 	r.GET("/health", s.healthHandler)
 
 	return r
 }
 
 func (s *Server) HelloWorldHandler(c *gin.Context) {
-	resp := make(map[string]string)
-	resp["message"] = "Hello World"
-
+	log.Println("[INFO] HelloWorld endpoint called")
+	resp := map[string]string{"message": "Hello World"}
 	c.JSON(http.StatusOK, resp)
 }
 
 func (s *Handler) ProcessBatch(c *gin.Context) {
 	var req entity.BatchRequest
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
-		c.JSON(http.StatusBadRequest, req)
+		log.Printf("[ERROR] Failed to decode request: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
 		return
 	}
 
-	// Validate request
+	log.Printf("[INFO] Processing batch request. BatchID=%s Items=%d", req.BatchID, len(req.Items))
+
 	if req.BatchID == "" {
-		c.JSON(http.StatusBadRequest, req)
+		log.Println("[WARN] Empty BatchID received")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "batch_id is required"})
 		return
 	}
 	if len(req.Items) == 0 {
-		c.JSON(http.StatusBadRequest, req)
+		log.Println("[WARN] Empty Items list received")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "items cannot be empty"})
 		return
 	}
 
 	// Process batch
 	response := s.service.ProcessBatch(req)
 
-	// Return response
+	log.Printf("[INFO] Batch %s processed successfully. ProcessedItems=%d", req.BatchID, len(req.Items))
+
 	c.JSON(http.StatusOK, response)
 }
 
 func (s *Server) healthHandler(c *gin.Context) {
+	log.Println("[INFO] Health check called")
 	c.JSON(http.StatusOK, s.db.Health())
 }
