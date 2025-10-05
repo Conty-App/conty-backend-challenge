@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS batch_reports;
+DROP TABLE IF EXISTS payouts;

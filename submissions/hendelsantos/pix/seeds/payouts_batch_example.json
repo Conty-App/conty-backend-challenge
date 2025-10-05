@@ -1,0 +1,35 @@
+{
+  "batch_id": "2025-10-05-A",
+  "items": [
+    {
+      "external_id": "u1-001",
+      "user_id": "u1",
+      "amount_cents": 35000,
+      "pix_key": "u1@email.com"
+    },
+    {
+      "external_id": "u2-002",
+      "user_id": "u2", 
+      "amount_cents": 120000,
+      "pix_key": "+55 11 91234-5678"
+    },
+    {
+      "external_id": "u3-003",
+      "user_id": "u3",
+      "amount_cents": 75000,
+      "pix_key": "12345678901"
+    },
+    {
+      "external_id": "u4-004", 
+      "user_id": "u4",
+      "amount_cents": 250000,
+      "pix_key": "user4@bank.com"
+    },
+    {
+      "external_id": "u5-005",
+      "user_id": "u5",
+      "amount_cents": 45000,
+      "pix_key": "+55 21 98765-4321"
+    }
+  ]
+}

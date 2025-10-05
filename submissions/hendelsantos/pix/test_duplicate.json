@@ -1,0 +1,17 @@
+{
+  "batch_id": "2025-10-05-B",
+  "items": [
+    {
+      "external_id": "u1-001",
+      "user_id": "u1",
+      "amount_cents": 50000,
+      "pix_key": "u1@email.com"
+    },
+    {
+      "external_id": "new-u6-001",
+      "user_id": "u6",
+      "amount_cents": 100000,
+      "pix_key": "new@email.com"
+    }
+  ]
+}

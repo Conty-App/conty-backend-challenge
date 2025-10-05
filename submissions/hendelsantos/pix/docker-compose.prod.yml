@@ -1,0 +1,33 @@
+version: '3.8'
+
+# Production overrides for docker-compose.yml
+services:
+  app:
+    environment:
+      - GIN_MODE=release
+      - LOG_LEVEL=warn
+      - PIX_SUCCESS_RATE=0.99
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  postgres:
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    command: >
+      postgres -c max_connections=100
+               -c shared_buffers=128MB
+               -c effective_cache_size=256MB
