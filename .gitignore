@@ -1,0 +1,16 @@
+# Node
+node_modules/
+dist/
+*.log
+
+# TypeScript
+*.tsbuildinfo
+
+# Env
+.env
+
+# VSCode
+.vscode/
+
+# Docker
+.dockerignore

@@ -1,0 +1,43 @@
+{
+  "name": "conty-backend-challenge",
+  "version": "1.0.0",
+  "description": "> Escolha **1 dos 2** desafios abaixo. Foque em **qualidade**, velocidade, clareza e confiabilidade. Exatamente nessa ordem.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only ./submissions/igorpardinho/pix/src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "cli": "ts-node src/cli.ts",
+    "test": "vitest",
+    "knex": "tsx ./node_modules/knex/bin/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/igorpardinho/conty-backend-challenge.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/igorpardinho/conty-backend-challenge/issues"
+  },
+  "homepage": "https://github.com/igorpardinho/conty-backend-challenge#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "fastify": "^5.6.1",
+    "fastify-plugin": "^5.1.0",
+    "knex": "^3.1.0",
+    "pg": "^8.16.3",
+    "pino": "^10.0.0",
+    "tsx": "^4.20.6",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.2",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
