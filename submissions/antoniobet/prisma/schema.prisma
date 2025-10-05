@@ -1,0 +1,55 @@
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Creator {
+    id               String     @id @default(cuid())
+    name             String
+    tags             String
+    audienceCountry  String
+    audienceAgeMin   Int
+    audienceAgeMax   Int
+    avgViews         Int
+    ctr              Float
+    cvr              Float
+    priceMinCents    Int
+    priceMaxCents    Int
+    reliabilityScore Float
+    pastDeals        PastDeal[]
+    createdAt        DateTime   @default(now())
+    updatedAt        DateTime   @updatedAt
+}
+
+model Campaign {
+    id                    String     @id @default(cuid())
+    brand                 String
+    goal                  String
+    tagsRequired          String
+    audienceTargetCountry String
+    audienceTargetAgeMin  Int
+    audienceTargetAgeMax  Int
+    budgetCents           Int
+    deadline              DateTime
+    pastDeals             PastDeal[]
+    createdAt             DateTime   @default(now())
+    updatedAt             DateTime   @updatedAt
+}
+
+model PastDeal {
+    id               String    @id @default(cuid())
+    creatorId        String
+    campaignId       String?
+    deliveredOnTime  Boolean
+    performanceScore Float
+    deliveredAt      DateTime
+    creator          Creator   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+    campaign         Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+
+    @@index([creatorId])
+    @@index([campaignId])
+}

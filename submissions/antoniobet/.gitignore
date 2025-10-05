@@ -78,3 +78,23 @@ lerna-debug.log*
 # temp directory
 .temp
 .tmp
+# Prisma
+prisma/*.db
+prisma/*.db-journal
+prisma/*.db-wal
+
+# SQLite databases
+*.db
+*.db-journal
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Docker volumes
+docker-data/
+postgres-data/
+
+# Backup files
+*.bak
+*.backup
+*.old

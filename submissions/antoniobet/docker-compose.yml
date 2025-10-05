@@ -1,0 +1,15 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: recommendations_api
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=file:./dev.db
+      - PORT=3000
+      - LOG_LEVEL=log
+    volumes:
+      - ./prisma:/app/prisma
+    restart: unless-stopped
