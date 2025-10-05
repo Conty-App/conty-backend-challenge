@@ -1,0 +1,27 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Batch {
+    id      Int      @id @default(autoincrement())
+    batchId String   @unique
+    items   PayoutItem[]
+}
+
+model PayoutItem {
+    id          Int    @id @default(autoincrement())
+    externalId  String
+    batchId     Int
+    batch       Batch  @relation(fields: [batchId], references: [id])
+    userId      String
+    pixKey      String
+    amountCents Int
+    status      String
+
+    @@unique([batchId, externalId])
+}
