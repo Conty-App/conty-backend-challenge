@@ -1,6 +1,12 @@
 import { prisma } from "../database/connection.js";
 import { simulatePayment } from "../util/payment.js";
 
+export async function getAllBatches() {
+  return await prisma.batch.findMany({
+    include: { items: true },
+  });
+}
+
 export async function processBatchPayment(batch_id: string, items: any[]) {
   const batch = await prisma.batch.upsert({
     where: { batchId: batch_id },
