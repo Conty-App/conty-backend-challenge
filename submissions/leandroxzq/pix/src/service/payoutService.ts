@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { prisma } from "../database/connection.js";
 import { simulatePayment } from "../util/payment.js";
 
