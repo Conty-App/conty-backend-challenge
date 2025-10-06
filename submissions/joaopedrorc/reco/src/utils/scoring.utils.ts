@@ -1,11 +1,7 @@
 import { creators as creatorsSchema, pastDeals as pastDealsSchema } from '../db/schema';
+import { CampaignType } from '../types';
 
 type CreatorType = typeof creatorsSchema.$inferSelect;
-type Campaign = {
-  tagsRequired: string[];
-  audienceTarget: { country: string; ageRange: [number, number] };
-  budgetCents: number;
-};
 type PastDeal = typeof pastDealsSchema.$inferSelect;
 
 interface IPerformanceStats {
@@ -36,7 +32,7 @@ export function calculateTagScore(campaignTags: string[], creatorTags: string[] 
 }
 
 // --- Audience Fit Score
-export function calculateAudienceScore(campaign: Campaign, creator: CreatorType): number {
+export function calculateAudienceScore(campaign: CampaignType, creator: CreatorType): number {
 
   if (!creator.audienceLocation?.includes(campaign.audienceTarget.country)) {
     return 0; 
@@ -68,7 +64,7 @@ export function calculatePerformanceScore(creator: CreatorType, stats: IPerforma
 }
 
 // --- Budget Fit Score
-export function calculateBudgetFitScore(campaign: Campaign, creator: CreatorType): number {
+export function calculateBudgetFitScore(campaign: CampaignType, creator: CreatorType): number {
   if (creator.priceMinCents! > campaign.budgetCents) {
     return 0;
   }
