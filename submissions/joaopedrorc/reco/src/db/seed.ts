@@ -1,6 +1,10 @@
 import { db } from './index';
 import { creators, campaigns, pastDeals } from './schema';
-import { generateCreators, generateCampaigns, generatePastDeals } from './generators';
+import {
+  generateCreators,
+  generateCampaigns,
+  generatePastDeals,
+} from './generators';
 
 async function seed() {
   console.log('Starting database seeding...');
@@ -13,12 +17,17 @@ async function seed() {
   const generatedCreators = generateCreators(50);
   const generatedCampaigns = generateCampaigns(10);
 
-  console.log(`Inserting ${generatedCreators.length} creators and ${generatedCampaigns.length} campaigns...`);
+  console.log(
+    `Inserting ${generatedCreators.length} creators and ${generatedCampaigns.length} campaigns...`,
+  );
   await db.insert(creators).values(generatedCreators);
   await db.insert(campaigns).values(generatedCampaigns);
 
   console.log('Generating historical past deals...');
-  const generatedDeals = generatePastDeals(generatedCreators, generatedCampaigns);
+  const generatedDeals = generatePastDeals(
+    generatedCreators,
+    generatedCampaigns,
+  );
 
   await db.insert(pastDeals).values(generatedDeals);
   console.log(`Inserted ${generatedDeals.length} past deals.`);
@@ -26,7 +35,7 @@ async function seed() {
   console.log('Database seeding completed successfully!');
 }
 
-seed().catch(err => {
+seed().catch((err) => {
   console.error('Error seeding database:', err);
   process.exit(1);
 });

@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import * as recommendationService from '../services/recommendation.service';
 
-export async function getRecommendations(req: Request, res: Response, next: NextFunction) {
+export async function getRecommendations(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const { campaign, top_k } = req.body;
     if (!campaign) {
@@ -11,7 +15,6 @@ export async function getRecommendations(req: Request, res: Response, next: Next
     const result = await recommendationService.findTopCreators(campaign, top_k);
 
     res.status(200).json(result);
-
   } catch (error) {
     next(error);
   }

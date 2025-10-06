@@ -7,7 +7,9 @@ export const creators = sqliteTable('creators', {
   tags: text('tags', { mode: 'json' }).$type<string[]>(),
   audienceAgeMin: integer('audience_age_min'),
   audienceAgeMax: integer('audience_age_max'),
-  audienceLocation: text('audience_location', { mode: 'json' }).$type<string[]>(),
+  audienceLocation: text('audience_location', { mode: 'json' }).$type<
+    string[]
+  >(),
   avgViews: integer('avg_views'),
   ctr: real('ctr'),
   cvr: real('cvr'),
@@ -21,15 +23,22 @@ export const campaigns = sqliteTable('campaigns', {
   brand: text('brand').notNull(),
   goal: text('goal'),
   tagsRequired: text('tags_required', { mode: 'json' }).$type<string[]>(),
-  audienceTarget: text('audience_target', { mode: 'json' }).$type<{ country: string; age_range: [number, number] }>(),
+  audienceTarget: text('audience_target', { mode: 'json' }).$type<{
+    country: string;
+    age_range: [number, number];
+  }>(),
   budgetCents: integer('budget_cents'),
   deadline: text('deadline'),
 });
 
 export const pastDeals = sqliteTable('past_deals', {
   id: text('id').primaryKey(),
-  creatorId: text('creator_id').notNull().references(() => creators.id),
-  campaignId: text('campaign_id').notNull().references(() => campaigns.id),
+  creatorId: text('creator_id')
+    .notNull()
+    .references(() => creators.id),
+  campaignId: text('campaign_id')
+    .notNull()
+    .references(() => campaigns.id),
   deliveredOnTime: integer('delivered_on_time', { mode: 'boolean' }),
   performanceScore: real('performance_score'),
 });
