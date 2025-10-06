@@ -6,7 +6,6 @@ import * as scoringUtils from '../utils/scoring.utils';
 vi.mock('../db');
 vi.mock('../utils/scoring.utils');
 
-// --- Test Data ---
 const mockCreator = {
   id: 'creator1',
   name: 'Test Creator',
