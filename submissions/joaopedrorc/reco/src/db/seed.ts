@@ -20,7 +20,6 @@ async function seed() {
   console.log('Generating historical past deals...');
   const generatedDeals = generatePastDeals(generatedCreators, generatedCampaigns);
 
-  console.log(`Inserting ${generatedDeals.length} past deals...`);
   await db.insert(pastDeals).values(generatedDeals);
   console.log(`Inserted ${generatedDeals.length} past deals.`);
 
