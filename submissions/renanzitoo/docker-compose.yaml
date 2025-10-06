@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: payouts_postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: payouts_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: pix_batch_api
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgresql://docker:docker@postgres:5432/payouts_db?schema=public
+    ports:
+      - "8080:8080"
+    restart: always
+    env_file:
+      - .env
+    command: ["npm", "start"]
+
+volumes:
+  postgres_data:
