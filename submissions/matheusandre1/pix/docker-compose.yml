@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  pix-api:
+    build: .
+    ports:
+      - "8080:8080"
+    container_name: pix-api
