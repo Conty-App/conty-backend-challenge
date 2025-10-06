@@ -17,8 +17,8 @@ dist
 .env.production.local
 
 # Database
-sqlite.db
-sqlite.db-journal
+src/db/sqlite.db
+src/db/sqlite.db-journal
 
 # Drizzle ORM
 drizzle/
