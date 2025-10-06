@@ -88,3 +88,24 @@ Modelo principal: **Payout**
 | amount_cents | integer      | Valor em centavos                     |
 | user_id      | string       | ID do usuário (opcional)             |
 | status       | enum         | `paid`, `failed` ou `duplicate`      |
+
+
+## Principais decisões & trade-offs
+
+Async SQLAlchemy + asyncpg: permite escalabilidade 
+
+Persistência em PostgreSQL (constraint única em external_id): garante idempotência mesmo após reinício do serviço.
+
+Simplicidade sobre complexidade: priorizei clareza e confiabilidade (idempotência, transações) em vez de filas/arquiteturas distribuídas, compatível com prazo do desafio.
+
+## O que eu mudaria com mais tempo
+
+- Adicionar migrations com Alembic.
+
+- Separar responsabilidades (controllers / services / repositories) em módulos.
+
+- Adicionar fila (celery/redis) para processamento assíncrono em massa.
+
+- Melhorar observabilidade (logs estruturados).
+
+- Testes de integração com DB isolado (testcontainers) e CI.
