@@ -129,7 +129,7 @@ O score final é uma média ponderada de cinco sub-scores, cada um normalizado p
 
 - **Tags (Peso: 0.35):**
     - **Regra:** Mede a relevância do conteúdo.
-    - **Normalização:** Utiliza o **Índice de Jaccard**, que calcula a interseção sobre a união dos sets de tags da campanha e do criador. O resultado já é naturalmente um valor entre 0 e 1.
+    - **Normalização:** Utiliza o [**Índice de Jaccard**](https://pt.wikipedia.org/wiki/%C3%8Dndice_Jaccard), que calcula a interseção sobre a união dos sets de tags da campanha e do criador. O resultado já é naturalmente um valor entre 0 e 1.
 
 - **Aderência de Audiência (Peso: 0.25):**
     - **Regra:** Garante que a audiência do criador corresponde ao público-alvo.
