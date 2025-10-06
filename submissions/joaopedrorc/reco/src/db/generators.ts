@@ -114,7 +114,6 @@ export function generatePastDeals(
 ): IPastDealSeed[] {
   const pastDeals: IPastDealSeed[] = [];
 
-  // For ~80% of creators, generate 1 to 5 past deals
   for (const creator of creators) {
     if (Math.random() > 0.2) {
       const dealCount = faker.number.int({ min: 1, max: 5 });
@@ -123,8 +122,8 @@ export function generatePastDeals(
         pastDeals.push({
           id: faker.string.uuid(),
           creatorId: creator.id,
-          campaignId: faker.helpers.arrayElement(campaigns).id, // Random campaign they "worked"
-          deliveredOnTime: Math.random() > 0.15, // 85% chance of being on time
+          campaignId: faker.helpers.arrayElement(campaigns).id,
+          deliveredOnTime: Math.random() > 0.15,
           performanceScore: parseFloat(
             faker.number.float({ min: 0.6, max: 1.0 }).toFixed(2),
           ),

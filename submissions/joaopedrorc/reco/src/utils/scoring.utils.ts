@@ -11,8 +11,6 @@ interface IPerformanceStats {
   maxCtr: number;
 }
 
-
-// --- Tags Score (Jaccard Index)
 export function calculateTagScore(campaignTags: string[], creatorTags: string[] | null): number {
   if (!creatorTags || creatorTags.length === 0) {
     return 0;
@@ -31,7 +29,6 @@ export function calculateTagScore(campaignTags: string[], creatorTags: string[] 
   return intersection.size / union.size;
 }
 
-// --- Audience Fit Score
 export function calculateAudienceScore(campaign: CampaignType, creator: CreatorType): number {
 
   if (!creator.audienceLocation?.includes(campaign.audienceTarget.country)) {
@@ -55,7 +52,6 @@ export function calculateAudienceScore(campaign: CampaignType, creator: CreatorT
   return overlap / targetRangeSize;
 }
 
-// --- Historical Performance Score
 export function calculatePerformanceScore(creator: CreatorType, stats: IPerformanceStats): number {
   const normViews = (creator.avgViews! - stats.minViews) / (stats.maxViews - stats.minViews || 1);
   const normCtr = (creator.ctr! - stats.minCtr) / (stats.maxCtr - stats.minCtr || 1);
@@ -63,7 +59,6 @@ export function calculatePerformanceScore(creator: CreatorType, stats: IPerforma
   return (normViews + normCtr) / 2;
 }
 
-// --- Budget Fit Score
 export function calculateBudgetFitScore(campaign: CampaignType, creator: CreatorType): number {
   if (creator.priceMinCents! > campaign.budgetCents) {
     return 0;
@@ -71,10 +66,9 @@ export function calculateBudgetFitScore(campaign: CampaignType, creator: Creator
   return 1;
 }
 
-// --- Reliability Score
 export function calculateReliabilityScore(creatorDeals: PastDeal[]): number {
   if (creatorDeals.length === 0) {
-    return 0.75; // Default score for creators with no history
+    return 0.75;
   }
   const onTimeCount = creatorDeals.filter(deal => deal.deliveredOnTime).length;
   return onTimeCount / creatorDeals.length;

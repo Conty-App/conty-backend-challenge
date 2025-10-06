@@ -6,7 +6,6 @@ import { CampaignType } from '../types';
 export async function findTopCreators(campaign: CampaignType, top_k = 10) {
   const allCreators = await db.query.creators.findMany();
 
-  // Pre-calculate stats for performance normalization
   const allViews = allCreators.map(c => c.avgViews || 0);
   const allCtrs = allCreators.map(c => c.ctr || 0);
   const performanceStats = {
