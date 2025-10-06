@@ -1,18 +1,20 @@
-from sqlalchemy import Column, Integer, String, Boolean, UniqueConstraint
+from sqlalchemy import Column, String, Integer, Enum
 from sqlalchemy.ext.declarative import declarative_base
+import enum
 
 Base = declarative_base()
 
-class PayoutItemModel(Base):
-    __tablename__ = "payout_items"
-    id = Column(Integer, primary_key=True, index=True)
-    batch_id = Column(String, index=True)
-    external_id = Column(String, unique=True, nullable=False)
-    user_id = Column(String, nullable=False)
-    amount_cents = Column(Integer, nullable=False)
-    pix_key = Column(String, nullable=False)
-    status = Column(String, nullable=False)
+class PaymentStatus(str, enum.Enum):
+    paid = "paid"
+    failed = "failed"
+    duplicate = "duplicate"
 
-    __table_args__ = (
-        UniqueConstraint("external_id", name="uq_external_id"),
-    )
+class Payout(Base):
+    __tablename__ = "payouts"
+
+    external_id = Column(String, primary_key=True, index=True)
+    batch_id = Column(String, index=True)
+    pix_key = Column(String, nullable=False)
+    amount_cents = Column(Integer, nullable=False)
+    user_id = Column(String, nullable=True)
+    status = Column(Enum(PaymentStatus), nullable=False)

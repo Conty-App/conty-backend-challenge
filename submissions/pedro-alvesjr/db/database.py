@@ -1,8 +1,11 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-import os
+from db.models import Base
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://conty:conty@localhost/conty_db")
+DATABASE_URL = "postgresql+asyncpg://usuario:senha@localhost:5432/seu_banco"
 
 engine = create_async_engine(DATABASE_URL, echo=True)
-AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+async_session = sessionmaker(
+    engine, expire_on_commit=False, class_=AsyncSession
+)
