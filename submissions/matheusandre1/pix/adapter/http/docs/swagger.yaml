@@ -1,0 +1,107 @@
+basePath: /
+definitions:
+  payment.PaymentDetailDto:
+    properties:
+      amount_cents:
+        type: number
+      external_id:
+        type: string
+      status:
+        type: string
+    type: object
+  payment.PaymentItemDto:
+    properties:
+      amount_cents:
+        type: number
+      external_id:
+        type: string
+      pix_key:
+        type: string
+      user_id:
+        type: string
+    type: object
+  request.PaymentRequestDto:
+    properties:
+      batch_id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/payment.PaymentItemDto'
+        type: array
+    type: object
+  response.PaymentResponseDto:
+    properties:
+      batch_id:
+        type: string
+      details:
+        items:
+          $ref: '#/definitions/payment.PaymentDetailDto'
+        type: array
+      duplicates:
+        type: integer
+      failed:
+        type: integer
+      processed:
+        type: integer
+      successful:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: Matheus André
+  title: Conty – Desafio Técnico (Backend)
+  version: "1.0"
+paths:
+  /payouts:
+    get:
+      description: Retorna uma lista de todos os pagamentos processados, incluindo
+        detalhes como status e valores.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de pagamentos processados
+          schema:
+            items:
+              $ref: '#/definitions/response.PaymentResponseDto'
+            type: array
+        "500":
+          description: Erro interno do servidor
+          schema:
+            type: string
+      summary: Recupera todos os pagamentos processados
+      tags:
+      - Pagamentos
+  /payouts/batch:
+    post:
+      consumes:
+      - application/json
+      description: Recebe um lote de pagamentos via Pix, processa cada pagamento e
+        retorna o status de cada um.
+      parameters:
+      - description: Lote de Pagamentos
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/request.PaymentRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lote processado com sucesso
+          schema:
+            $ref: '#/definitions/response.PaymentResponseDto'
+        "400":
+          description: Requisição inválida
+          schema:
+            type: string
+        "500":
+          description: Erro interno do servidor
+          schema:
+            type: string
+      summary: Processa um lote de pagamentos via Pix
+      tags:
+      - Pagamentos
+swagger: "2.0"

@@ -1,0 +1,162 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Conty – Desafio Técnico (Backend)",
+        "contact": {
+            "name": "Matheus André"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/payouts": {
+            "get": {
+                "description": "Retorna uma lista de todos os pagamentos processados, incluindo detalhes como status e valores.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pagamentos"
+                ],
+                "summary": "Recupera todos os pagamentos processados",
+                "responses": {
+                    "200": {
+                        "description": "Lista de pagamentos processados",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.PaymentResponseDto"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/payouts/batch": {
+            "post": {
+                "description": "Recebe um lote de pagamentos via Pix, processa cada pagamento e retorna o status de cada um.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pagamentos"
+                ],
+                "summary": "Processa um lote de pagamentos via Pix",
+                "parameters": [
+                    {
+                        "description": "Lote de Pagamentos",
+                        "name": "payment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.PaymentRequestDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lote processado com sucesso",
+                        "schema": {
+                            "$ref": "#/definitions/response.PaymentResponseDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição inválida",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "payment.PaymentDetailDto": {
+            "type": "object",
+            "properties": {
+                "amount_cents": {
+                    "type": "number"
+                },
+                "external_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "payment.PaymentItemDto": {
+            "type": "object",
+            "properties": {
+                "amount_cents": {
+                    "type": "number"
+                },
+                "external_id": {
+                    "type": "string"
+                },
+                "pix_key": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.PaymentRequestDto": {
+            "type": "object",
+            "properties": {
+                "batch_id": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/payment.PaymentItemDto"
+                    }
+                }
+            }
+        },
+        "response.PaymentResponseDto": {
+            "type": "object",
+            "properties": {
+                "batch_id": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/payment.PaymentDetailDto"
+                    }
+                },
+                "duplicates": {
+                    "type": "integer"
+                },
+                "failed": {
+                    "type": "integer"
+                },
+                "processed": {
+                    "type": "integer"
+                },
+                "successful": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
