@@ -33,7 +33,7 @@ app.register(routes);
 
 const start = async () => {
   try {
-    await app.listen({ port: env.PORT || 3333 });
+    await app.listen({ port: env.PORT || 3333, host: '0.0.0.0' });
     console.log(`[INFO] HTTP server running on http://localhost:${process.env.PORT}`);
   } catch (err) {
     console.error("[ERROR] An error ocurred while trying running the server: ", fastify().log.error(err));
