@@ -1,0 +1,49 @@
+services:
+  postgres-node-db:
+    image: postgres
+    restart: always
+    container_name: postgres-node-db
+    env_file:
+      - .env
+    ports:
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - conty-challenge-network
+  
+  app:
+    build: .
+    container_name: node_app
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      postgres-node-db:
+        condition: service_healthy
+    command: >
+      sh -c "
+        npx prisma migrate deploy &&
+        npm run seed &&
+        npm run dev
+      "
+    networks:
+      - conty-challenge-network
+volumes:
+  db_data:
+
+networks:
+  conty-challenge-network:
+    driver: bridge
