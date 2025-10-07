@@ -3,7 +3,6 @@
 > **Local da submissão:** `submissions/abeatrizsc/reco`
 
 ## Estrutura do projeto
-### Organização de pastas
 ### Arquitetura
 ![fluxograma da arquitetura](./docs/images/conty_backend_challenge_structure.png)
 
@@ -45,7 +44,7 @@ Para maior precisão, adotaria uma estrutura mais realista, incluindo a porcenta
 
 8. **Scoring**: Implementaria a lógica de `scoring_version`, que no momento se encontra estático.
 
-9. **Past Deals**: Embora não tenha sido utilizada por se tratar de dados fictícios, integraria a entidade PastDeals ao cálculo de confiabilidade e penalidades, refletindo o histórico de desempenho dos criadores.
+9. **Past Deals e Campaign**: Não foram utilizados dados diretamente das entidades por conta de ter sido gerado dados fictícios, porém com mais tempo utilizaria para validações e para também refletir no histórico de desempenho dos criadores.
 
 10. **Outras melhorias de performance**: Pensando no ambiente real de produção, pesquisaria e aplicaria algoritmos mais eficientes para cálculo e ranqueamento, além de implementar um sistema de cache para armazenar resultados de recomendações ou consultas de criadores mais acessados, reduzindo chamadas ao banco e melhorando o tempo de resposta.
 
@@ -114,6 +113,10 @@ const weights = {
 
 - **Vitest**: Framework de testes rápido e simples, compatível com o ecossistema TypeScript.
 
+- **PostgreSQL**: Banco de dados relacional robusto, de código aberto, utilizado para armazenar e gerenciar dados de forma estruturada e eficiente.
+
+- **Docker**: Plataforma de containers que permite empacotar, distribuir e executar aplicativos de forma isolada e consistente em diferentes ambientes.
+
 ## Como rodar
 ### Requisitos
 - Docker
@@ -138,10 +141,88 @@ docker-compose up --build
  ```
 
 ## Endpoints
-- Acesse a documentação completa dos endpoints através do Swagger em `api/v1/docs`.
+- Para a documentação completa dos endpoints, acesse através do Swagger em `localhost:${PORT}/api/v1/docs`.
+
+### Recommendation
+#### **POST** `/api/v1/recommendations`
+- Dada uma campanha (briefing, orçamento, requisitos) e uma base de criadores (tags, estatísticas, histórico), retorne uma classificação adequada dos criadores com justificativas legíveis.
+
+#### Request Body
+- `RecommendationRequestDto`:
+
+```json
+{
+  "campaign": {
+    "goal": "installs",
+    "tags_required": ["fintech", "investimentos"],
+    "audience_target": { "country": "BR", "age_range": [20,34] },
+    "budget_cents": 5000000,
+    "deadline": "2025-10-30"
+  },
+  "top_k": 20,
+  "diversity": true
+}
+```
+
+#### Success Response Body
+- `200` : `RecommendationResponseDto`:
+
+```json
+{
+  "recommendations": [
+    {
+      "creator_id": "5307...",
+      "score": 0.75,
+      "fit_breakdown": {
+        "tags": 1,
+        "audience_overlap": 0.39,
+        "performance": 0.75,
+        "budget_fit": 1
+      },
+      "why": "Fala sobre fintech, investimentos; Alta confiabilidade (0.94% de entregas pontuais)"
+    },
+    {
+      "creator_id": "7015...",
+      "score": 0.73,
+      "fit_breakdown": {
+        "tags": 1,
+        "audience_overlap": 0.89,
+        "performance": 0.85,
+        "budget_fit": 1
+      },
+      "why": "Fala sobre fintech, investimentos; 50% audiência BR 23–34"
+    },
+    //...
+  ]
+}
+```
+---
 
 ## Testes
-- Como rodar e o que cobre
+### Como rodar 
+```bash
+npm run test
+```
+![Print da execução dos testes](./docs/images/npm_run_test_screenshot.jpg)
+
+### Coverage
+- Ao rodar o comando abaixo, gera-se um relatório que mostra a cobertura dos testes
+
+```bash
+npx vitest run --coverage
+```
+
+Exemplo de saída (Obtido através da própria aplicação):
+
+File                           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------------------|---------|----------|---------|---------|-------------------
+ src/lib                       |     100 |      100 |     100 |     100 | 
+  prisma.ts                    |     100 |      100 |     100 |     100 | 
+ src/repositories              |      40 |      100 |       0 |      40 | 
+  creator.repository.ts        |      40 |      100 |       0 |      40 | 5-10
+ src/services                  |   98.38 |      100 |   85.71 |   98.38 |                   
+  creator.service.ts           |   66.66 |      100 |       0 |   66.66 | 6-7
+  recommendation.service.ts    |     100 |      100 |     100 |     100 | 
 
 ## IA/Libraries
 Durante o desenvolvimento deste projeto, utilizei IA (ChatGPT) como ferramenta de **apoio** para:
@@ -150,4 +231,4 @@ Durante o desenvolvimento deste projeto, utilizei IA (ChatGPT) como ferramenta d
 
 - Gerar o `seed.ts` para criação de exemplos de dados fictícios com o Fakerjs, populando de forma eficiente o banco;
 
-- Auxiliar na formatação da validação de esquemas Zod, criação de eficientes fórmulas matemáticas através do código e geração de pequenas descrições às tecnologias utilizadas.
+- Auxiliar na formatação da validação de esquemas Zod, criação de eficientes fórmulas matemáticas através do código e auxílio na geração de pequenas descrições às tecnologias utilizadas e testes.
