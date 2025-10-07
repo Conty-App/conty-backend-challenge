@@ -15,17 +15,18 @@ app.setSerializerCompiler(serializerCompiler);
 app.register(fastifyCors, { origin: '*' });
 
 app.register(fastifySwagger, {
-    openapi: {
-        info: {
-            title: 'Typed API',
-            version: '1.0.0'
-        }
-    },
-    transform: jsonSchemaTransform,
+  openapi: {
+    info: {
+      title: 'CONTY BACKEND CHALLENGE - RECO API',
+      description: 'Resolution of the conty-backend-challenge - RECO.',
+      version: '1.0.0'
+    }
+  },
+  transform: jsonSchemaTransform,
 });
 
 app.register(fastifySwaggerUi, {
-    routePrefix: SWAGGER_ROUTE_PREFIX,
+  routePrefix: SWAGGER_ROUTE_PREFIX,
 })
 
 app.register(routes);
@@ -40,4 +41,4 @@ const start = async () => {
   }
 };
 
-start()
+start();
