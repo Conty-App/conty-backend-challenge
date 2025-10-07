@@ -4,7 +4,7 @@
   "description": "Resolution of the conty-backend-challenge 'reco'.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch src/server.ts"
   },
   "repository": {
     "type": "git",
