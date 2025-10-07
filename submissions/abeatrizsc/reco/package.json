@@ -4,6 +4,7 @@
   "description": "Resolution of the conty-backend-challenge 'reco'.",
   "main": "index.js",
   "scripts": {
+    "test": "vitest",
     "dev": "tsx watch src/server.ts",
     "migrate": "npx prisma migrate dev --name init --create-db",
     "seed": "tsx ./prisma/seed.ts"
@@ -30,6 +31,7 @@
     "@fastify/swagger": "^9.5.2",
     "@fastify/swagger-ui": "^5.2.3",
     "@prisma/client": "^6.16.3",
+    "@vitest/coverage-v8": "^3.2.4",
     "dotenv": "^17.2.3",
     "fastify": "^5.6.1",
     "fastify-type-provider-zod": "^6.0.0",
@@ -37,8 +39,11 @@
   },
   "devDependencies": {
     "@types/node": "^24.7.0",
+    "@types/supertest": "^6.0.3",
     "prisma": "^6.16.3",
+    "supertest": "^7.1.4",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   }
 }
