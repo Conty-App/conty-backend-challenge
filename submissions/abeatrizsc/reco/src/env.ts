@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === "test") {
 }
 
 export const envSchema = z.object({
-  //DATABASE_URL: z.string().url().min(1),
+  DATABASE_URL: z.string().url().min(1),
   PORT: z.coerce.number().default(3333),
 });
 
