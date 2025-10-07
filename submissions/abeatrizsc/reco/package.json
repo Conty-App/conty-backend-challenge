@@ -1,0 +1,41 @@
+{
+  "name": "reco",
+  "version": "1.0.0",
+  "description": "Resolution of the conty-backend-challenge 'reco'.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ABeatrizSC/conty-backend-challenge.git"
+  },
+  "keywords": [
+    "challenge",
+    "backend",
+    "nodejs",
+    "typescript"
+  ],
+  "author": "Ana Beatriz Santucci Carmoni",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ABeatrizSC/conty-backend-challenge/issues"
+  },
+  "homepage": "https://github.com/ABeatrizSC/conty-backend-challenge#readme",
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "@fastify/swagger": "^9.5.2",
+    "@fastify/swagger-ui": "^5.2.3",
+    "@prisma/client": "^6.16.3",
+    "dotenv": "^17.2.3",
+    "fastify": "^5.6.1",
+    "fastify-type-provider-zod": "^6.0.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.0",
+    "prisma": "^6.16.3",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
