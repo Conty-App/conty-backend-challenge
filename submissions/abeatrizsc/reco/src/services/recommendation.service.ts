@@ -58,19 +58,20 @@ export const recommendationService = {
     }
 }
 
-function calcTagFit(tagsRequired: string[], tags: string[]) {
-    const campaignTags = new Set<any>(tagsRequired);
-    const creatorTags = new Set<any>(tags);
+export function calcTagFit(tagsRequired: string[], tags: string[]) {
+    const campaignTags = new Set<string>(tagsRequired);
+    const creatorTags = new Set<string>(tags);
 
-    const intersection = new Set<any>();
+    const intersection = new Set<string>();
     for (const item of campaignTags) {
         if (creatorTags.has(item)) {
             intersection.add(item);
         }
     }
 
-    const union = new Set<any>([...campaignTags, ...creatorTags]);
-    const tagFit = union.size === 0 ? 0 : intersection.size / union.size;
+    const union = new Set<string>([...campaignTags, ...creatorTags]);
+
+    const tagFit = union.size === 0 ? 0 : intersection.size / campaignTags.size;
 
     const reason = intersection.size > 0
     ? `Fala sobre ${[...intersection].join(', ')}`
@@ -79,7 +80,7 @@ function calcTagFit(tagsRequired: string[], tags: string[]) {
     return { tagFit: Number(tagFit.toFixed(2)), reason };
 }
 
-function calcAudienceFit(
+export function calcAudienceFit(
     campaign: { country: string; age_range: number[] }, 
     creator: { audience_location: string[], audience_age: number[] }
 ) {
@@ -106,7 +107,7 @@ function calcAudienceFit(
     return { audienceFit: Number(audienceOverlap.toFixed(2)), reason };
 }
 
-function calcPerformance(
+export function calcPerformance(
     creators: Creator[], 
     ctr: number, 
     cvr: number, 
@@ -125,7 +126,7 @@ function calcPerformance(
   return Number(performance.toFixed(2));
 }
 
-function calcBudgetFit(
+export function calcBudgetFit(
     campaignBudget: number, 
     creatorMinPrice: number, 
     creatorMaxPrice: number
@@ -140,7 +141,7 @@ function calcBudgetFit(
     return Number(((campaignBudget - creatorMinPrice) / totalBudgetRange).toFixed(2));
 }
 
-function getPenalties(reliability_score: number) {
+export function getPenalties(reliability_score: number) {
     let penaltie = 0.00;
     let reason = "";
 
