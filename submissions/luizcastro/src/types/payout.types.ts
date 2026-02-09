@@ -1,29 +1,45 @@
-export interface PayoutItem {
-  external_id: string;
-  user_id: string;
-  amount_cents: number;
-  pix_key: string;
-}
+import { t } from "elysia";
 
-export interface BatchInput {
-  batch_id: string;
-  items: PayoutItem[];
-}
+export const payoutItem = t.Object({
+  external_id: t.String(),
+  user_id: t.String(),
+  amount_cents: t.Number(),
+  pix_key: t.String(),
+});
 
-export type PaymentStatus = "paid" | "failed" | "duplicate";
+export type PayoutItem = typeof payoutItem.static;
 
-export interface PaymentResult {
-  external_id: string;
-  status: PaymentStatus;
-  amount_cents: number;
-  retries: number;
-}
+export const batchInput = t.Object({
+  batch_id: t.String(),
+  items: t.Array(payoutItem),
+});
 
-export interface BatchReport {
-  batch_id: string;
-  processed: number;
-  successful: number;
-  failed: number;
-  duplicates: number;
-  details: PaymentResult[];
-}
+export type BatchInput = typeof batchInput.static;
+
+export const paymentStatus = t.Union([
+  t.Literal("paid"),
+  t.Literal("failed"),
+  t.Literal("duplicate"),
+]);
+
+export type PaymentStatus = typeof paymentStatus.static;
+
+export const paymentResult = t.Object({
+  external_id: t.String(),
+  status: paymentStatus,
+  amount_cents: t.Number(),
+  retries: t.Number(),
+});
+
+export type PaymentResult = typeof paymentResult.static;
+
+export const batchReport = t.Object({
+  batch_id: t.String(),
+  processed: t.Number(),
+  successful: t.Number(),
+  failed: t.Number(),
+  duplicates: t.Number(),
+  details: t.Array(paymentResult),
+});
+
+export type BatchReport = typeof batchReport.static;
