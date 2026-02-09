@@ -137,7 +137,7 @@ describe("processBatch", () => {
     mock.module("../utils/pix-simulator", () => ({
       simulatePixPayment: () => {
         callCount++;
-        if (callCount === 1) return Promise.reject(new Error("PIX payment timeout"));
+        if (callCount === 1) return Promise.resolve(false);
         return Promise.resolve(true);
       },
     }));

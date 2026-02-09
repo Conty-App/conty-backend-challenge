@@ -12,8 +12,8 @@ export async function simulatePixPayment(): Promise<boolean> {
     setTimeout(() => resolve(Math.random() < SUCCESS_RATE), delay);
   });
 
-  const timeout = new Promise<boolean>((_, reject) => {
-    setTimeout(() => reject(new Error("PIX payment timeout")), TIMEOUT_MS);
+  const timeout = new Promise<boolean>((resolve) => {
+    setTimeout(() => resolve(false), TIMEOUT_MS);
   });
 
   return Promise.race([payment, timeout]);
