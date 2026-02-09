@@ -25,7 +25,7 @@ docker compose up --build
 
 ### `POST /payouts/batch`
 
-Processa um lote de pagamentos PIX de forma idempotente.
+Processa um lote de pagamentos PIX de forma idempotente, com retry automático para falhas.
 
 **Request:**
 ```bash
@@ -54,8 +54,8 @@ curl -X POST http://localhost:8080/payouts/batch \
   "failed": 0,
   "duplicates": 0,
   "details": [
-    { "external_id": "u1-001", "status": "paid", "amount_cents": 35000 },
-    { "external_id": "u2-002", "status": "paid", "amount_cents": 120000 }
+    { "external_id": "u1-001", "status": "paid", "amount_cents": 35000, "retries": 0 },
+    { "external_id": "u2-002", "status": "paid", "amount_cents": 120000, "retries": 1 }
   ]
 }
 ```
@@ -66,26 +66,28 @@ Repetir a mesma chamada retorna `"duplicates": 2` e `"successful": 0` — garant
 
 ```
 src/
-├── index.ts              # Entrypoint — servidor Elysia na porta 8080
-├── routes/payouts.ts     # Rota POST /payouts/batch com validação de schema
-├── services/payout.service.ts  # Lógica de processamento do lote
-├── store/payment.store.ts      # Store em memória (Map) para idempotência
-├── types/payout.types.ts       # Tipos TypeScript
-└── utils/pix-simulator.ts      # Simulação de liquidação PIX
+├── index.ts                   Entrypoint — servidor Elysia na porta 8080
+├── routes/payouts.ts          Rota POST /payouts/batch com validação de schema
+├── services/payout.service.ts Processamento do lote com retry queue paralela
+├── store/payment.store.ts     Store em memória (Map) para idempotência
+├── types/payout.types.ts      Tipos TypeScript
+└── utils/pix-simulator.ts     Simulação de liquidação PIX com timeout
 ```
 
 ### Decisões
 
-- **Elysia.js**: Framework leve e tipado, perfeito para Bun. Validação de schema integrada via TypeBox.
+- **Elysia.js**: Framework leve e tipado para Bun. Validação de schema integrada via TypeBox.
 - **Persistência em memória (Map)**: Suficiente para o escopo do desafio. Em produção, usaria PostgreSQL com unique constraint no `external_id`.
-- **Idempotência via `external_id`**: Cada pagamento processado é armazenado no Map. Chamadas repetidas retornam `duplicate` sem reprocessar.
-- **Simulação PIX**: Delay aleatório (50-200ms) com ~90% de sucesso para simular um cenário realista.
+- **Idempotência via `external_id`**: Cada pagamento processado é armazenado no Map. Chamadas repetidas retornam `"duplicate"` sem reprocessar.
+- **Retry Queue com Promise.allSettled**: Pagamentos falhos voltam para a fila e são retentados até 3 vezes. Cada rodada processa todos os itens em paralelo via `Promise.allSettled`, garantindo que uma falha individual não interrompe o lote.
+- **Timeout via Promise.race**: Cada simulação PIX tem timeout de 5s. Se estourar, retorna `false` e o item entra no fluxo de retry.
+- **Simulação PIX**: Delay aleatório (50-200ms) com ~70% de sucesso.
 
 ### Trade-offs e melhorias com mais tempo
 
 - **Persistência**: Migraria para PostgreSQL com unique constraint + transaction isolation.
 - **Concorrência**: Adicionaria mutex por `external_id` para evitar race conditions em requests simultâneos.
-- **Retry**: Implementaria retry automático para pagamentos falhos com backoff exponencial.
+- **Backoff exponencial**: Delay crescente entre retries para não sobrecarregar o provedor PIX.
 - **Observabilidade**: Structured logging, métricas (Prometheus) e tracing.
 - **Webhook**: Notificação assíncrona do status do batch via callback URL.
 
@@ -95,12 +97,15 @@ src/
 bun test
 ```
 
-Cobertura:
-- Processamento de batch (contagens corretas)
+Cobertura (11 testes):
+- Processamento de batch com contagens corretas
 - Idempotência (duplicatas não reprocessam)
 - Mix de itens novos e duplicados
 - Batch vazio
-- Preservação de valores
+- Preservação de valores (amount_cents)
+- Retry até 3 tentativas antes de marcar como failed
+- Sucesso após falhas iniciais (retry funcional)
+- Timeout tratado como falha com retry
 - Validação de schema na rota (422 para body inválido)
 - Idempotência via rota HTTP
 

@@ -12,9 +12,9 @@
 ┌──────────────────────────────────────────────────────────────────┐
 │  Elysia Route                                                    │
 │  Validação de schema via TypeBox                                 │
-│  batch_id: string, items: { external_id, user_id,                │
+│  batch_id: string, items: { external_id, user_id,               │
 │  amount_cents, pix_key }[]                                       │
-│                                                  ❌ 422 invalid   │
+│                                                  ❌ 422 invalid  │
 └──────────────────────┬───────────────────────────────────────────┘
                        │ ✅ válido
                        ▼
@@ -26,36 +26,41 @@
 │    ┌─────────────────────┐     ┌──────────────────────────┐      │
 │    │ Já existe no Map?   │     │ Não existe no Map?       │      │
 │    │                     │     │                          │      │
-│    │  ➜ "duplicate"      │     │  ➜ entra na FILA (r: 0) │       │
+│    │  ➜ "duplicate"      │     │  ➜ entra na FILA (r: 0) │      │
 │    │    vai pro resultado│     │                          │      │
 │    └─────────────────────┘     └──────────┬───────────────┘      │
 └───────────────────────────────────────────┼──────────────────────┘
                                             │
                                             ▼
 ┌──────────────────────────────────────────────────────────────────┐
-│  Retry Queue (while loop)                                        │
+│  Retry Queue (while loop por rodadas)                            │
 │                                                                  │
-│  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐                     │
-│  │item1   │ │item2   │ │item3   │ │item2   │  ◄── retry          │
-│  │r: 0    │ │r: 0    │ │r: 0    │ │r: 1    │                     │
-│  └───┬────┘ └────────┘ └────────┘ └────────┘                     │
-│      │ shift()                                                   │
-│      ▼                                                           │
+│  Rodada N: pega todos os itens da fila                           │
+│                                                                  │
+│  ┌────────┐ ┌────────┐ ┌────────┐                               │
+│  │item1   │ │item2   │ │item3   │                                │
+│  │r: 0    │ │r: 0    │ │r: 0    │                                │
+│  └────────┘ └────────┘ └────────┘                                │
+│       │          │          │                                    │
+│       ▼          ▼          ▼        processados em PARALELO     │
 │  ┌──────────────────────────────────────────────────────┐        │
-│  │  PIX Simulator                                       │        │
+│  │  Promise.allSettled([ processItem, processItem, ...])│        │
+│  │                                                      │        │
+│  │  Cada processItem chama o PIX Simulator:             │        │
 │  │  Promise.race(simulação, timeout 5s)                 │        │
-│  │  delay: 50-200ms  |  ~70% sucesso                    │        │
+│  │  delay: 50-200ms  |  ~70% sucesso                   │        │
 │  └──────┬──────────────────┬──────────────────┬─────────┘        │
 │         │                  │                  │                  │
 │         ▼                  ▼                  ▼                  │
-│  ┌─────────────┐  ┌────────────────┐  ┌────────────────┐         │
-│  │  ✅ Sucesso  │  │ ⚠️ Falha      │  │ ⚠️ Falha      │         │
-│  │             │  │ retries < 3    │  │ retries = 3    │         │
-│  │ salva "paid"│  │                │  │                │         │
-│  │ no Map      │  │ push() no fim  │  │ no Map         │         │
-│  │             │  │ da fila ↻      │  │                │         │
-│  └─────────────┘  └────────────────┘  └────────────────┘         │
+│  ┌─────────────┐  ┌────────────────┐  ┌────────────────┐        │
+│  │  ✅ Sucesso  │  │ ⚠️ Falha       │  │ ❌ Falha       │        │
+│  │             │  │ retries < 3    │  │ retries = 3    │        │
+│  │ salva "paid"│  │                │  │                │        │
+│  │ no Map      │  │ vai pro        │  │ salva "failed" │        │
+│  │             │  │ retryQueue ↻   │  │ no Map         │        │
+│  └─────────────┘  └────────────────┘  └────────────────┘        │
 │                                                                  │
+│  queue = retryQueue → próxima rodada (só com falhos)             │
 │  Repete até a fila esvaziar                                      │
 └──────────────────────┬───────────────────────────────────────────┘
                        │
@@ -70,8 +75,8 @@
 │    "failed": 0,                                                  │
 │    "duplicates": 1,                                              │
 │    "details": [                                                  │
-│      { "external_id": "u1-001", "status": "paid",    retries: 0 }│
-│      { "external_id": "u2-002", "status": "paid",    retries: 2 }│
+│      { "external_id": "u1-001", "status": "paid",    retries: 0}│
+│      { "external_id": "u2-002", "status": "paid",    retries: 2}│
 │      { "external_id": "u3-003", "status": "duplicate",retries: 0}│
 │    ]                                                             │
 │  }                                                               │
@@ -100,26 +105,23 @@
 └─────────────────────────────────────────────┘
 
 
-## Retry Queue — Exemplo
+## Retry Queue — Exemplo (processamento paralelo por rodada)
 
-  Fila inicial:  [item1(r:0)] [item2(r:0)] [item3(r:0)]
+  Rodada 1:  [item1(r:0), item2(r:0), item3(r:0)]  → Promise.allSettled
+             item1 ✅ "paid"  |  item2 ❌ falha  |  item3 ✅ "paid"
 
-  ① item1 → PIX → ✅ sucesso → "paid" (retries: 0)
-     Fila:  [item2(r:0)] [item3(r:0)]
+  Rodada 2:  [item2(r:1)]  → Promise.allSettled
+             item2 ❌ falha
 
-  ② item2 → PIX → ❌ falha → volta pro fim (r:1)
-     Fila:  [item3(r:0)] [item2(r:1)]
+  Rodada 3:  [item2(r:2)]  → Promise.allSettled
+             item2 ❌ falha
 
-  ③ item3 → PIX → ✅ sucesso → "paid" (retries: 0)
-     Fila:  [item2(r:1)]
+  Rodada 4:  [item2(r:3)]  → Promise.allSettled
+             item2 ❌ falha → retries = 3, marca como "failed"
 
-  ④ item2 → PIX → ❌ falha → volta pro fim (r:2)
-     Fila:  [item2(r:2)]
-
-  ⑤ item2 → PIX → ✅ sucesso → "paid" (retries: 2)
-     Fila:  [] ← vazia, fim!
+  Fila vazia → fim
 
 
 ## Stack
 
-  Bun 1.3 · Elysia.js · TypeScript · In-Memory Map · Retry Queue (max 3) · Timeout 5s
+  Bun 1.3 · Elysia.js · TypeScript · In-Memory Map · Promise.allSettled · Retry Queue (max 3) · Timeout 5s
