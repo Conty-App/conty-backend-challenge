@@ -16,6 +16,7 @@ export interface PaymentResult {
   external_id: string;
   status: PaymentStatus;
   amount_cents: number;
+  retries: number;
 }
 
 export interface BatchReport {
