@@ -85,6 +85,7 @@ src/
 
 ### Trade-offs e melhorias com mais tempo
 
+- **Processamento assíncrono com message broker**: O fluxo atual é síncrono — o cliente espera todos os pagamentos (incluindo retries) terminarem. Em produção, o ideal seria retornar `202 Accepted` imediatamente e processar o batch via fila (SQS, RabbitMQ ou Kafka). Workers consumiriam a fila com retries nativos do broker e dead letter queue para falhas definitivas. O cliente consultaria o status via `GET /payouts/batch/:id` ou receberia via webhook.
 - **Persistência**: Migraria para PostgreSQL com unique constraint + transaction isolation.
 - **Concorrência**: Adicionaria mutex por `external_id` para evitar race conditions em requests simultâneos.
 - **Backoff exponencial**: Delay crescente entre retries para não sobrecarregar o provedor PIX.
@@ -97,7 +98,7 @@ src/
 bun test
 ```
 
-Cobertura (11 testes):
+Cobertura (12 testes):
 - Processamento de batch com contagens corretas
 - Idempotência (duplicatas não reprocessam)
 - Mix de itens novos e duplicados

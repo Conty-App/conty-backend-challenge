@@ -43,3 +43,10 @@ export const batchReport = t.Object({
 });
 
 export type BatchReport = typeof batchReport.static;
+
+export const errorResponse = t.Object({
+  error: t.String(),
+  details: t.Optional(t.String()),
+});
+
+export type ErrorResponse = typeof errorResponse.static;

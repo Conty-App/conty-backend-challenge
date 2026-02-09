@@ -36,6 +36,16 @@ describe("POST /payouts/batch", () => {
   it("should return 422 for invalid body", async () => {
     const res = await postBatch({ invalid: true });
     expect(res.status).toBe(422);
+    const json = await res.json();
+    expect(json.error).toBeDefined();
+  });
+
+  it("should return 422 for missing required fields", async () => {
+    const res = await postBatch({
+      batch_id: "b3",
+      items: [{ external_id: "x1" }],
+    });
+    expect(res.status).toBe(422);
   });
 
   it("should enforce idempotency across requests", async () => {
