@@ -1,6 +1,6 @@
-# Desafio Conty – PIX Batch Payments
+# Desafio Conty – Luiz Castro / @luizhcastro
 
-> **Submissão:** `submissions/luizcastro/`
+> **Local da submissão:** `submissions/luizcastro/pix`
 
 ## Como rodar
 
@@ -9,7 +9,7 @@
 
 ### Sem Docker
 ```bash
-cd submissions/luizcastro
+cd submissions/luizcastro/pix
 bun install
 bun run start        # porta 8080
 bun run dev          # modo watch
@@ -17,7 +17,7 @@ bun run dev          # modo watch
 
 ### Com Docker
 ```bash
-cd submissions/luizcastro
+cd submissions/luizcastro/pix
 docker compose up --build
 ```
 
@@ -112,6 +112,13 @@ Cobertura (12 testes):
 
 ## IA/Libraries
 
+### Terceiros
 - **Elysia.js**: Framework HTTP
 - **Bun**: Runtime e test runner
-- **Claude Code**: Utilizado para auxiliar na implementação
+
+### IA
+- **Claude Code**: Utilizado para auxiliar na implementação (código e testes)
+
+### O que é meu
+- Decisões de arquitetura (retry queue paralela, idempotência por external_id, simulação PIX com timeout)
+- Revisão, ajustes e validação de todo o código gerado
