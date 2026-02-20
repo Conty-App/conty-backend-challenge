@@ -42,7 +42,7 @@
 | **ErickJ3** | Rust + Axum + Redis | PIX | Arquitetura distribuída sofisticada, idempotência robusta, documentação completa | [PR #2](https://github.com/Conty-App/conty-backend-challenge/pull/2) | [@ErickJ3](https://github.com/ErickJ3) |
 | **Wesley Damasceno** |Typescript + NestJS + Redis | PIX | Escalabilidade com workers horizontais, separação de worker/API, documentação boa | [PR #13](https://github.com/Conty-App/conty-backend-challenge/pull/13) | [@wesleydmscn](https://github.com/wesleydmscn) |
 | **Cezar Fuhr** | Python + FastAPI + PostgreSQL | PIX | Segurança enterprise, cobertura de testes ~90%, arquitetura limpa | [PR #12](https://github.com/Conty-App/conty-backend-challenge/pull/12) | [@cezarfuhr](https://github.com/cezarfuhr) |
-| **Antonio Bet** | NestJS + Prisma | RECOMMENDATIONS | Algoritmos avançados, base matemática sólida, documentação detalhada | [PR #7](https://github.com/Conty-App/conty-backend-challenge/pull/7) | [@antoniobet](https://github.com/antoniobet) |
+| **Luiz Castro** | Bun + Elysia.js + TypeScript | PIX | Idempotência correta, retry + timeout, documentação com diagramas, testes sólidos | [PR #15](https://github.com/Conty-App/conty-backend-challenge/pull/15) | [@luizhcastro](https://github.com/luizhcastro) |
 | **Ana Beatriz** |Typescript + Nodejs + PostgreSQL + Docker| RECOMMENDATIONS |Documentação clara, código limpo e organizado| [PR #14](https://github.com/Conty-App/conty-backend-challenge/pull/14) | [@ABeatrizSC](https://github.com/ABeatrizSC) |
 
 
